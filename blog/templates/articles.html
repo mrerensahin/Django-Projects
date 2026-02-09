@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<h2>Makaleler</h2>
+
+<hr class="my-4">
+<div class="row">
+    <div class="col-lg-8">
+       
+           <form method="get"  class="search-form mb-4">
+            {% csrf_token %}
+    <input type="search" name="keyword" placeholder="Makale Ara...">
+    <button type="submit">🔍 Ara</button>
+</form>
+
+<style>
+.search-form {
+    display: flex;
+    gap: 10px;
+    max-width: 420px;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 12px 16px;
+    border-radius: 999px;
+    border: 1px solid #e0e0e0;
+    font-size: 14px;
+}
+
+.search-form button {
+    padding: 12px 18px;
+    border-radius: 999px;
+    border: none;
+    background: #198754;
+    color: white;
+    cursor: pointer;
+}
+</style>
+
+{% if articles %}
+<div class="row">
+    <div class="col-lg-8">
+       
+        {% for article in articles %}
+        <article>
+            <header class="mb-4">
+                <h2 class="fw-bolder mb-1">{{ article.title }}</h2>
+
+                <div class="text-muted fst-italic mb-2">
+                    {{ article.created_date|date:"d F Y" }} tarihinde
+                    {{ article.author.username }} tarafından yayınlandı
+                </div>
+            </header>
+
+            {% if article.article_image %}
+            <figure class="mb-4">
+                <img class="img-fluid rounded"
+                     src="{{ article.article_image.url }}"
+                     alt="{{ article.title }}">
+            </figure>
+            {% endif %}
+
+            <hr class="my-4">
+
+            <section class="mb-5">
+                <p class="fs-5 mb-4">
+                    {{ article.content|truncatewords_html:20 }}
+
+                </p>
+                <hr class="my-4">
+
+                <a href="/article/{{article.id}}" class="btn btn-success">Devamını Oku</a>
+            </section>
+        </article>
+        {% endfor %}
+
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="col-lg-8">
+
+<div class="alert alert-danger">
+    Makale Bulunamadı
+</div>
+</div>
+</div>
+</div>
+{% endif %}
+
+
+
+{% endblock %}

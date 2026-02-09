@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block body %}
+ <div class="row">
+    <div class="col-lg-8">
+
+        <article>
+            <!-- Post header-->
+            <header class="mb-4">
+                <!-- Post title-->
+                <h2 class="fw-bolder mb-1">{{ article.title }}</h2>
+
+                <!-- Post meta content-->
+                <div class="text-muted fst-italic mb-2">
+                    {{ article.created_date|date:"d F Y" }} tarihinde
+                    {{ article.author.username }} tarafından yayınlandı
+                </div>
+            </header>
+            
+            <!-- Preview image -->
+             {% if article.article_image %}
+             
+             
+            <figure class="mb-4">
+                <img class="img-fluid rounded"
+                     src="{{article.article_image.url}}"
+                     alt="{{ article.title }}">
+            </figure>
+            {% endif %}
+
+            <hr class="my-4">
+
+            <!-- Post content-->
+            <section class="mb-5">
+                <p class="fs-5 mb-4">
+                    {{ article.content|safe }}
+                </p>
+            </section>
+
+        </article>
+
+    </div>
+</div>
+
+{% if comments %}
+    {% for comment in comments %}
+<div class="d-flex mb-4">
+    <div class="flex-shrink-0">
+        <img src="https://api.dicebear.com/7.x/initials/svg?seed={{ comment.comment_author }}"
+     width="50"
+     height="50"
+     style="border-radius:50%;">
+    </div>
+
+    <div style="margin-left: 30px;">
+        <h4 class="fw-bold mb-1">
+            {{ comment.comment_author }}
+        </h4>
+        <p class="mb-0">
+            {{comment.comment_date}} <br>
+            {{ comment.comment_content }}
+        </p>
+    </div>
+</div>
+
+    {% endfor %}
+{% else %}
+    <div class="alert alert-danger">
+        Bu makaleye henüz yorum yapılmamış.<br>
+        İlk yorumu yapan siz olun.
+    </div>
+{% endif %}
+
+
+<br><br><br>
+
+
+
+
+
+
+
+  <section class="mb-5">
+    <div class="card">
+        <div class="card-body">
+
+            <h5 class="mb-3">Yorum Yap</h5>
+
+            <form action="{% url 'article:comment' article.id %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+    <label for="exampleInputEmail1">İsim</label>
+    <input
+    type="text"
+    name="comment_author"
+    class="form-control"
+    id="name-form"
+    placeholder="İsminizi Giriniz :"
+    required
+>
+
+    
+  </div>
+
+                <div class="mb-3">
+                    <textarea
+    name="comment_content"
+    class="form-control"
+    rows="4"
+    placeholder="Yorumunuzu yazın..."
+    required
+></textarea>
+
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Gönder
+                </button>
+            </form>
+
+        </div>
+    </div>
+</section>
+
+
+
+
+{% endblock %}
